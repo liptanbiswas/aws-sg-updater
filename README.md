@@ -2,7 +2,9 @@
 
 **How to use.**
 
+```bash
 ./aws-sg-updater -t liptan -i sg-63stf4gst637 -i sg-74744nnnn4n4n
+```
 
 Options.
  - `-t` Tag name for identifying security group rule. It will be put in description of security group rule.
