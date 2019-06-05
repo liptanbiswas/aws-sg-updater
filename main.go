@@ -30,7 +30,7 @@ func revokeOldSecurityGroupRule(c *ec2.EC2, groupid *string, oldrange *ec2.IpPer
 	if err != nil {
 		fmt.Errorf(
 			"Error revoking security group %s rules: %s",
-			groupid, err)
+			*groupid, err)
 	}
 	fmt.Printf("Successfully removed Security Group rule for %s\n", *groupid)
 }
@@ -54,7 +54,7 @@ func addNewSecurityGroupRule(c *ec2.EC2, groupid *string, tag *string, wanip net
 		if err != nil {
 			fmt.Errorf(
 				"Error Adding security group %s rules: %s",
-				groupid, err)
+				*groupid, err)
 		}
 		fmt.Printf("Successfully added Security Group for tag %s and IP %s\n", *tag, wancidr)
 	} else {
@@ -74,7 +74,7 @@ func addNewSecurityGroupRule(c *ec2.EC2, groupid *string, tag *string, wanip net
 		if err != nil {
 			fmt.Errorf(
 				"Error Adding security group %s rules: %s",
-				groupid, err)
+				*groupid, err)
 		}
 		fmt.Printf("Successfully added Security Group for tag %s and IP %s\n", *tag, wancidr)
 	}
@@ -120,45 +120,40 @@ func run(groupIds sgGroupID, tag *string) {
 		fmt.Printf("Checking Security Group ID : %s\n", *group.GroupId)
 		for _, ingress := range group.IpPermissions {
 			if ingress.Ipv6Ranges != nil {
-				if ingress.Ipv6Ranges[0].Description != nil {
-					if *ingress.Ipv6Ranges[0].Description == *tag {
-						tagexists = 1
-						awsip, _, err := net.ParseCIDR(*ingress.Ipv6Ranges[0].CidrIpv6)
+				if ingress.Ipv6Ranges[0].Description != nil && *ingress.Ipv6Ranges[0].Description == *tag {
+					tagexists = 1
+					awsip, _, err := net.ParseCIDR(*ingress.Ipv6Ranges[0].CidrIpv6)
 
-						if err != nil {
-							exitErrorf("Unable to Parse IP address.")
-						}
-						if net.IP.Equal(awsip, wanip) {
-							fmt.Printf("IP on aws for tag %s matched with wan IP %s\n", *tag, wanip)
-						} else {
-							fmt.Printf("IP on aws for tag %s not matched with wan IP %s\n", *tag, wanip)
-							fmt.Printf("Revoking Old security group rule.\n")
-							revokeOldSecurityGroupRule(svc, group.GroupId, ingress)
-							fmt.Printf("Adding New security group rule.\n")
-							addNewSecurityGroupRule(svc, group.GroupId, tag, wanip)
-						}
+					if err != nil {
+						exitErrorf("Unable to Parse IP address.")
+					}
+					if net.IP.Equal(awsip, wanip) {
+						fmt.Printf("IP on aws for tag %s matched with wan IP %s\n", *tag, wanip)
+					} else {
+						fmt.Printf("IP on aws for tag %s not matched with wan IP %s\n", *tag, wanip)
+						fmt.Printf("Revoking Old security group rule.\n")
+						revokeOldSecurityGroupRule(svc, group.GroupId, ingress)
+						fmt.Printf("Adding New security group rule.\n")
+						addNewSecurityGroupRule(svc, group.GroupId, tag, wanip)
 					}
 				}
 			}
 			if ingress.IpRanges != nil {
-				if ingress.IpRanges[0].Description != nil {
-					if *ingress.IpRanges[0].Description == *tag {
-						tagexists = 1
+				if ingress.IpRanges[0].Description != nil && *ingress.IpRanges[0].Description == *tag {
+					tagexists = 1
+					awsip, _, err := net.ParseCIDR(*ingress.IpRanges[0].CidrIp)
 
-						awsip, _, err := net.ParseCIDR(*ingress.IpRanges[0].CidrIp)
-
-						if err != nil {
-							exitErrorf("Unable to Parse IP address.")
-						}
-						if net.IP.Equal(awsip, wanip) {
-							fmt.Printf("IP on aws for tag %s matched with wan IP %s\n", *tag, wanip)
-						} else {
-							fmt.Printf("IP on aws for tag %s not matched with wan IP %s\n", *tag, wanip)
-							fmt.Printf("Revoking Old security group rule.")
-							revokeOldSecurityGroupRule(svc, group.GroupId, ingress)
-							fmt.Printf("Adding New security group rule.\n")
-							addNewSecurityGroupRule(svc, group.GroupId, tag, wanip)
-						}
+					if err != nil {
+						exitErrorf("Unable to Parse IP address.")
+					}
+					if net.IP.Equal(awsip, wanip) {
+						fmt.Printf("IP on aws for tag %s matched with wan IP %s\n", *tag, wanip)
+					} else {
+						fmt.Printf("IP on aws for tag %s not matched with wan IP %s\n", *tag, wanip)
+						fmt.Printf("Revoking Old security group rule.")
+						revokeOldSecurityGroupRule(svc, group.GroupId, ingress)
+						fmt.Printf("Adding New security group rule.\n")
+						addNewSecurityGroupRule(svc, group.GroupId, tag, wanip)
 					}
 				}
 			}
