@@ -1,0 +1,9 @@
+language: go
+go:
+- 1.12.x
+sudo: required
+script:
+- go test -v 2>&1 | tee test.out
+- bash .github/pr_test_comment.sh 
+- go build -o aws-sg-updater
+- chmod +x aws-sg-updater
