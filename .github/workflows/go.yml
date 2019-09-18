@@ -2,20 +2,15 @@ on: push
 name: Go
 jobs:
   review:
-    name: Review code
+    name: Review Code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       
-      - name: Check styling error
+      - name: Lint Code
         uses: "cedrickring/golang-action@1.3.0"
         with:
           args: go get -u golang.org/x/lint/golint; go list ./... | grep -v /vendor/ | xargs -L1 golint -set_exit_status
 
-  testable:
-    name: Testable
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: build
+      - name: Run Tests and Build
         uses: "cedrickring/golang-action@1.3.0"
