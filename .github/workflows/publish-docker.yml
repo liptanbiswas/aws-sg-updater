@@ -2,7 +2,7 @@ on:
   push:
     tags:
     - '*'
-
+name: Build Docker Image
 jobs:
   build:
     name: Build Application
@@ -30,6 +30,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             return context.payload.ref.replace(/\/refs\/tags\//, '');
+
+      - name: Echo
+        run: echo ${{ steps.tag.outputs.result }}
+
 
       - name: Build and Push Docker image
         run: |
