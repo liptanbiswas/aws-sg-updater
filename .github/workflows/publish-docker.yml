@@ -35,7 +35,7 @@ jobs:
         run: echo ${{ steps.tag.outputs.result }}
 
       - name: Echo
-        run: echo ${{ GITHUB_REF }}
+        run: printenv
 
       - name: Echo
         run: echo ${{ TEST_ENV }}
