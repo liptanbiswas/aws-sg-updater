@@ -1,0 +1,29 @@
+on:
+  push: 
+    branches: 
+      - refs/tags/*
+jobs:
+  review:
+    - name: Review Code
+      runs-on: ubuntu-latest
+      steps:
+        - uses: ./.github/workflows/go.yml
+
+      - name: Extract tag name
+        id: tag
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.ref.replace(/\/refs\/tags\//, '');
+
+  build:
+    name: Build Docker
+    run: |
+      docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
+      docker build -t $GITHUB_REPOSITORY:"$TAG_NAME" .;
+      docker push $GITHUB_REPOSITORY:"$TAG_NAME";
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      TAG_NAME: ${{ steps.tag.outputs.result }}
