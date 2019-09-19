@@ -1,5 +1,5 @@
-on: push
-name: Go
+on: pull_request
+name: Code Review
 jobs:
   review:
     name: Review Code
