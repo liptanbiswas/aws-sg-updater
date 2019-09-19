@@ -37,11 +37,6 @@ jobs:
       - name: Echo
         run: printenv
 
-      - name: Echo
-        run: echo ${{ TEST_ENV }}
-        env:
-          TEST_ENV: ${{ GITHUB_REF | replace("refs/tags/","")}}
-
       - name: Build and Push Docker image
         run: |
           docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
