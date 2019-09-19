@@ -4,7 +4,7 @@ on:
     - '*'
 
 jobs:
-  review:
+  build:
     name: Build Application
     runs-on: ubuntu-latest
     steps:
@@ -31,13 +31,12 @@ jobs:
           script: |
             return context.payload.ref.replace(/\/refs\/tags\//, '');
 
-  build:
-    name: Build Docker
-    run: |
-      docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-      docker build -t $GITHUB_REPOSITORY:"$TAG_NAME" .;
-      docker push $GITHUB_REPOSITORY:"$TAG_NAME";
-    env:
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
-      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-      TAG_NAME: ${{ steps.tag.outputs.result }}
+      - name: Build and Push Docker image
+        run: |
+          docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
+          docker build -t $GITHUB_REPOSITORY:"$TAG_NAME" .;
+          docker push $GITHUB_REPOSITORY:"$TAG_NAME";
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+          TAG_NAME: ${{ steps.tag.outputs.result }}
