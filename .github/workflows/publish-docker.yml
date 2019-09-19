@@ -2,10 +2,11 @@ on:
   push:
     tags:
     - '*'
+
 jobs:
   review:
-    - name: Review Code
-      runs-on: ubuntu-latest
+    name: Build Application
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       
