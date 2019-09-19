@@ -38,11 +38,11 @@ jobs:
           DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
 
       - name: Build Docker Image
-        run: docker build -t liptanbiswas/aws-sg-updater:$TAG_NAME .;
+        run: docker build -t liptanbiswas/aws-sg-updater:$TAG_NAME .
         env:
           TAG_NAME: ${{ steps.tag.outputs.result }}
 
       - name: Push Docker Image
-        run: docker push liptanbiswas/aws-sg-updater:$TAG_NAME;
+        run: docker push liptanbiswas/aws-sg-updater:$TAG_NAME
         env:
           TAG_NAME: ${{ steps.tag.outputs.result }}
