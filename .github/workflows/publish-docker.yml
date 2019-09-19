@@ -29,19 +29,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            return context.payload.ref.replace(/\/refs\/tags\//, '');
-
-      - name: Echo
-        run: echo ${{ steps.tag.outputs.result }}
-
-      - name: Echo
-        run: printenv
+            return context.payload.ref.replace(/refs\/tags\//, '');
 
       - name: Build and Push Docker image
         run: |
           docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-          docker build -t $GITHUB_REPOSITORY:"$TAG_NAME" .;
-          docker push $GITHUB_REPOSITORY:"$TAG_NAME";
+          docker build -t liptanbiswas/aws-sg-updater:$TAG_NAME .;
+          docker push liptanbiswas/aws-sg-updater:$TAG_NAME;
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
