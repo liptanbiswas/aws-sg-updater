@@ -1,6 +1,6 @@
 # AWS Security Group Updater
 
-**How to use.**
+### How to use.
 
 ```bash
 ./aws-sg-updater -t liptan -i sg-63stf4gst637 -i sg-74744nnnn4n4n
