@@ -7,8 +7,8 @@
 ```
 
 Options.
- - `-t` Tag name for identifying security group rule. It will be put in description of security group rule.
- - `-i` AWS Security Group IDs.
+- `-t` Tag name for identifying security group rule. It will be put in description of security group rule.
+- `-i` AWS Security Group IDs.
 
 
 The program reads AWS credentials from `~/.aws/credentials`.
